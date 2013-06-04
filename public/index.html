@@ -1,0 +1,23 @@
+<html>
+<head>
+<title>GraphClient</title>
+<script src="http://cdn.peerjs.com/0/peer.js"></script>
+<script>
+var peer = new Peer('Alpha', {host: 'localhost', port: 9000});
+peer.on('connection', function(conn){
+  conn.on('data', function(data) {
+    console.log('Got data:', data);
+  });
+});
+
+var conn = peer.connect('Beta');
+conn.on('open', function() {
+  conn.send('Hello world!');
+});
+
+</script>
+</head>
+<body>
+
+</body>
+</html>
