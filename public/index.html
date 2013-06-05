@@ -2,22 +2,30 @@
 <head>
 <title>GraphClient</title>
 <script src="http://cdn.peerjs.com/0/peer.js"></script>
-<script>
-var peer = new Peer('Alpha', {host: 'localhost', port: 9000});
-peer.on('connection', function(conn){
-  conn.on('data', function(data) {
-    console.log('Got data:', data);
-  });
-});
-
-var conn = peer.connect('Beta');
-conn.on('open', function() {
-  conn.send('Hello world!');
-});
-
-</script>
 </head>
 <body>
+
+<div>Name: <span id="name">{{name}}</span></div>
+<div>Target: <span id="target">{{target}}</span></div>
+
+<script>
+window.onload = function() {
+  var name = document.getElementById('name').innerHTML;
+  var target = document.getElementById('target').innerHTML;
+
+  var peer = new Peer(name, {host: 'localhost', port: 9000});
+  peer.on('connection', function(conn){
+    conn.on('data', function(data) {
+      console.log('Got data:', data);
+    });
+  });
+
+  var conn = peer.connect(target);
+  conn.on('open', function() {
+    conn.send('Hello world!');
+  });
+};
+</script>
 
 </body>
 </html>
