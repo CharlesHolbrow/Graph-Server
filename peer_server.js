@@ -7,14 +7,27 @@ var source = fs.readFileSync('public/index.html', {encoding: 'utf8'});
 var template = Handlebars.compile(source)
 
 exServe.get('/', function(req, res){
-  res.send('Try this - /:name/to/:target');
+  res.send('Try this - /to/:target');
 });
 
-exServe.get('/:name/to/:target', function(req, res){
+// we will name the nodes on our graph
+var clientNames = ['ape', 'bat', 'cat', 'cow', 'cub', 'doe', 'dog', 'elk', 'ewe', 'fox', 'kid', 'man', 'pig', 'pup', 'ram', 'rat', 'sow'];
+var nameIndex = 0;
+
+var getClientName = function() {
+  var name = clientNames[nameIndex];
+  nameIndex++;
+  if (nameIndex >= clientNames.length) {
+    nameIndex = 0;
+  }
+  return name;
+}
+
+exServe.get('/to/:target', function(req, res){
   var pathDirs = req.url.split('/');
   var context = {
-    name: pathDirs[1],
-    target: pathDirs[3]
+    name: getClientName(),
+    target: pathDirs[2]
   };
 
   res.send(template(context));
