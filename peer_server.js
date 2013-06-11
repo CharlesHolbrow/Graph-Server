@@ -28,12 +28,18 @@ var getClientName = function() {
   return name;
 }
 
+// the server itself is a nexus
+var nexus = Nexus.make(getClientName());
+
 exServe.get('/to/:target', function(req, res){
   var pathDirs = req.url.split('/');
   var context = {
     name: getClientName(),
     target: pathDirs[2]
   };
+
+  nexus.friends[context.name] = true;
+  console.log(nexus);
 
   res.send(template(context));
 });
