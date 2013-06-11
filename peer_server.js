@@ -1,6 +1,7 @@
 var PeerServer  = require('peer').PeerServer;
 var Handlebars  = require('handlebars');
 var fs          = require('fs');
+var Nexus       = require('./Nexus.js');
 
 var exServe = require('express')();
 var source = fs.readFileSync('public/index.html', {encoding: 'utf8'});
@@ -8,6 +9,10 @@ var template = Handlebars.compile(source)
 
 exServe.get('/', function(req, res){
   res.send('Try this - /to/:target');
+});
+
+exServe.get('/Nexus.js', function(req, res){
+  res.sendfile('./Nexus.js');
 });
 
 // we will name the nodes on our graph
