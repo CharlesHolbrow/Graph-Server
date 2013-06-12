@@ -3,7 +3,7 @@ var conn;
 var nexus;
 
 var onJoin = function() {
-  if (this.status === 200) {
+  if (this.status >= 200 && this.status <= 202) {
 
     var answer = JSON.parse(this.response); // assume valid json with .name
     console.log('JOINED!', answer);
@@ -11,30 +11,21 @@ var onJoin = function() {
 
     nexus = Nexus.make(answer.name);
 
-    // we have a name. We may now alert the other nodes
+    // on each new connection, register data listener
     peer = new Peer(answer.name, {host: 'localhost', port: 9000});
     peer.on('connection', function(conn){
       conn.on('data', function(data) {
         console.log('Got data:', data);
 
-        // if the incoming data is an event object with a return address
-        // trigger the event on the nexus, and send back the result
-        if (data.event && data.from) {
-
+        // if the incoming data is an event object trigger the
+        // event on the nexus, and send back the result
+        if (data.event) {
           var result = nexus.trigger(data);
-          console.log('sending back <%s> to %s', JSON.stringify(result), data.from);
-
-          conn = peer.connect(data.from);
-
-          if (conn.open) {
-            conn.send(result);
-          } else {
-            conn.on('open', function() {
-              conn.send(nexus.trigger(data))
-            });
-          }
+          console.log('sending back <%s> to %s', JSON.stringify(result), conn.peer);
+          conn.open && conn.send(result); // only send if connection is open
         }
       });
+
       conn.on('error', function(error) {
         console.error('Peer (incoming?) connection error:', error);
       });
