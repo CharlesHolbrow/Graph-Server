@@ -28,6 +28,10 @@ exServe.get('/Nexus.js', function(req, res){
   res.sendfile('./Nexus.js');
 });
 
+exServe.get('/graphConnect.js', function(req, res){
+  res.sendfile('./public/graphConnect.js');
+});
+
 exServe.get('/', function(req, res){
   res.send('Try this - /to/:target');
 });

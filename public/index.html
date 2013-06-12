@@ -4,54 +4,12 @@
   <script src="http://cdn.peerjs.com/0/peer.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
   <script src="/Nexus.js"></script>
+  <script src="/graphConnect.js"></script>
 </head>
 <body>
 
-<div>Name: <span id="name">{{name}}</span></div>
-<div>Target: <span id="target">{{target}}</span></div>
-
-<script>
-window.onload = function() {
-  var target = document.getElementById('target').innerHTML;
-  var peer;
-  var conn;
-  var nexus;
-
-  // let's try to join the graph
-  var joinRequest = new XMLHttpRequest();
-  joinRequest.onload = function() {
-    if (this.status === 200) {
-
-      var answer = JSON.parse(this.response); // assume valid json with .name
-      console.log('JOINED!', answer);
-      document.getElementById('name').innerHTML = answer.name;
-
-      nexus = Nexus.make(answer.name);
-
-      // we have a name, so we may now alert the other nodes
-      peer = new Peer(answer.name, {host: 'localhost', port: 9000});
-      peer.on('connection', function(conn){
-        conn.on('data', function(data) {
-          console.log('Got data:', data);
-        });
-      });
-
-      // try to send a greeting to other nodes
-      conn = peer.connect(target);
-      conn.on('open', function() {
-        conn.send('Hello from ' + nexus.name);
-      });
-
-    } else {
-      console.error('Error joining graph', this);
-    }
-  };
-
-  joinRequest.open('POST', '/join', true);
-  joinRequest.send();
-
-};
-</script>
+  <div>Name: <span id="name"></span></div>
+  <div>Target: <span id="target">{{target}}</span></div>
 
 </body>
 </html>
