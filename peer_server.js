@@ -7,14 +7,6 @@ var exServe = require('express')();
 var source = fs.readFileSync('public/index.html', {encoding: 'utf8'});
 var template = Handlebars.compile(source)
 
-exServe.get('/', function(req, res){
-  res.send('Try this - /to/:target');
-});
-
-exServe.get('/Nexus.js', function(req, res){
-  res.sendfile('./Nexus.js');
-});
-
 // we will name the nodes on our graph
 var clientNames = ['ape', 'bat', 'cat', 'cow', 'cub', 'doe', 'dog', 'elk', 'ewe', 'fox', 'kid', 'man', 'pig', 'pup', 'ram', 'rat', 'sow'];
 var nameIndex = 0;
@@ -26,10 +18,25 @@ var getClientName = function() {
     nameIndex = 0;
   }
   return name;
-}
+};
 
 // the server itself is a nexus
-var nexus = Nexus.make(getClientName());
+var nexus = Nexus.make('Server A!');
+
+
+exServe.get('/Nexus.js', function(req, res){
+  res.sendfile('./Nexus.js');
+});
+
+exServe.get('/', function(req, res){
+  res.send('Try this - /to/:target');
+});
+
+
+exServe.get('/friends', function(req, res){
+  res.send(nexus.friends);
+});
+
 
 exServe.get('/to/:target', function(req, res){
   var pathDirs = req.url.split('/');
@@ -38,8 +45,10 @@ exServe.get('/to/:target', function(req, res){
     target: pathDirs[2]
   };
 
-  nexus.friends[context.name] = true;
-  console.log(nexus);
+  nexus.trigger({
+    event:'join',
+    data:{ name:getClientName() }
+  });
 
   res.send(template(context));
 });

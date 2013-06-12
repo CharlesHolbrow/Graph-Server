@@ -14,12 +14,10 @@ available. if a resource is in the collection, and the
 corresponding node is in the friends object then we may
 request the resource from the friend.
 
-events = {}
-
 an exmple event object:
-event = {
-  name = "add", // required
-  data = {
+{
+  event: "add", // required
+  data: {
     ...
   }
 }
@@ -39,14 +37,25 @@ Nexus.make = function(name) {
     events[eventName].push(func);
   };
 
-  nexus.trigger = function(event) {
-    var eventList = events[event.name];
+  nexus.trigger = function(obj) {
+    var eventList = events[obj.event];
     if (!eventList) return;
 
     for (var i = 0; i < eventList.length; i++) {
-      eventList[i](event.data);
+      eventList[i](obj.data);
     };
   };
 
+  nexus.on('join', function(data) {
+    if (!data.name) return;
+    nexus.friends[data.name] = true;
+  });
+
   return nexus;
+};
+
+
+// Useable as a node module OR html
+if (typeof exports !== 'undefined') {
+  exports.make = Nexus.make;
 };
