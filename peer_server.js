@@ -32,23 +32,26 @@ exServe.get('/', function(req, res){
   res.send('Try this - /to/:target');
 });
 
-
 exServe.get('/friends', function(req, res){
   res.send(nexus.friends);
+});
+
+exServe.post('/join', function(req, res){
+  var name = getClientName();
+  res.json({name:name, friends:nexus.friends});
+
+  nexus.trigger({
+    event:'join',
+    data:{ name:name }
+  });
 });
 
 
 exServe.get('/to/:target', function(req, res){
   var pathDirs = req.url.split('/');
   var context = {
-    name: getClientName(),
     target: pathDirs[2]
   };
-
-  nexus.trigger({
-    event:'join',
-    data:{ name:getClientName() }
-  });
 
   res.send(template(context));
 });
