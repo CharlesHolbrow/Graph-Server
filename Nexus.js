@@ -16,6 +16,13 @@ request the resource from the friend.
 
 events = {} // TBD
 
+an exmple event object:
+event = {
+  name = "add", // required
+  data = {
+    ...
+  }
+}
 
 */
 
@@ -23,8 +30,24 @@ var Nexus = {}
 
 Nexus.make = function(name) {
   var nexus = {};
+  var events = {};
   nexus.name = name;
   nexus.friends = {};
+
+  nexus.on = function(eventName, func) {
+    events[eventName] = events[eventName] || [];
+    events[eventName].push(func);
+  };
+
+  nexus.trigger = function(event) {
+    var eventList = events[event.name];
+    if (!eventList) return;
+
+    for (var i = 0; i < eventList.length; i++) {
+      eventList[i](event.data);
+    };
+  };
+
   return nexus;
 };
 
