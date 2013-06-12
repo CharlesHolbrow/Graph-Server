@@ -14,7 +14,7 @@ available. if a resource is in the collection, and the
 corresponding node is in the friends object then we may
 request the resource from the friend.
 
-events = {} // TBD
+events = {}
 
 an exmple event object:
 event = {
@@ -49,9 +49,4 @@ Nexus.make = function(name) {
   };
 
   return nexus;
-};
-
-// Useable as a node module OR html
-if (typeof exports !== 'undefined') {
-  exports.make = Nexus.make;
 };
