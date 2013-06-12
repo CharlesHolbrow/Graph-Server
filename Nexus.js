@@ -41,15 +41,23 @@ Nexus.make = function(name) {
     var eventList = events[obj.event];
     if (!eventList) return;
 
-    for (var i = 0; i < eventList.length; i++) {
-      eventList[i](obj.data);
+    var result;
+    for (var i = eventList.length - 1; i >= 0; i--) {
+      var check = eventList[i](obj.data);
+      result = check || result;
     };
+
+    return result; // Cation: returns only the first result
   };
 
   nexus.on('join', function(data) {
     if (!data.name) return;
     nexus.friends[data.name] = true;
   });
+
+  nexus.on('ping', function() {
+    return {name: nexus.name};
+  })
 
   return nexus;
 };
