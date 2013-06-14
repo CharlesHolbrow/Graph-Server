@@ -1,7 +1,7 @@
 var PeerServer  = require('peer').PeerServer;
 var Handlebars  = require('handlebars');
 var fs          = require('fs');
-var Nexus       = require('./Nexus.js');
+var Nexus       = require('./public/js/Nexus.js');
 var express     = require('express')
 
 var exServe = express();
@@ -32,12 +32,10 @@ var getClientName = function() {
 // the server itself is a nexus
 var nexus = Nexus.make('Server A!');
 
-exServe.get('/Nexus.js', function(req, res){ res.sendfile('./Nexus.js'); });
-exServe.get('/BrowserNexus.js', function(req, res){ res.sendfile('./public/BrowserNexus.js'); });
+// serve static files
+exServe.use(express.static(__dirname + '/public'));
 
-exServe.get('/graphConnect.js', function(req, res){
-  res.sendfile('./public/graphConnect.js');
-});
+exServe.get('/Nexus.js', function(req, res){ res.sendfile('./Nexus.js'); });
 
 exServe.get('/', function(req, res){
   res.send('Try this - /to/:target');
