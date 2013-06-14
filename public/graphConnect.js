@@ -1,7 +1,3 @@
-var peer;
-var conn;
-var nexus;
-
 var onJoin = function() {
   if (this.status >= 200 && this.status <= 202) {
 
@@ -9,40 +5,16 @@ var onJoin = function() {
     console.log('JOINED!', answer);
     document.getElementById('name').innerHTML = answer.name;
 
-    nexus = Nexus.make(answer.name);
-
-    // on each new connection, register data listener
-    peer = new Peer(answer.name, {host: 'localhost', port: 9000});
-    peer.on('connection', function(conn){
-      conn.on('data', function(data) {
-        console.log('Got data:', data);
-
-        // if the incoming data is an event object trigger the
-        // event on the nexus, and send back the result
-        if (data.event) {
-          var result = nexus.trigger(data);
-          console.log('sending back <%s> to %s', JSON.stringify(result), conn.peer);
-          conn.open && conn.send(result); // only send if connection is open
-        }
-      });
-
-      conn.on('error', function(error) {
-        console.error('Peer (incoming?) connection error:', error);
-      });
-    });
+    window.nexus = BrowserNexus.make(answer.name);
 
     // try to send a greeting to target node
     var target = document.getElementById('target').innerHTML;
-    conn = peer.connect(target);
 
-    conn.on('open', function() {
-      conn.send({event:'ping', from: nexus.name});
-    });
-    conn.on('error', function(error){
-      console.log('peer connection error:', error);
+    nexus.connect(target, function(conn) {
+      conn.send({event:'ping'});
     });
 
-  } else {
+  } else { // not 200, 201, 202
     console.error('Error joining graph', this);
   }
 };

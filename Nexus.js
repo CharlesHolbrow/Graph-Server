@@ -1,24 +1,13 @@
 /* Nexus.js
 
-A nexus is one node in the node graph. Stores two important
-dictionaries.
-
-friends = {}
-is a object containing truthy values for all known node
-names in the graph.
-
-resources = {} // TBD
-is a collection of named resources. The object values are
-arrays of friend names who have claim to have the resource
-available. if a resource is in the collection, and the
-corresponding node is in the friends object then we may
-request the resource from the friend.
+A nexus is one node in the node graph.
 
 an exmple event object:
 {
-  event: "add", // required
+  event: "addRequest", // required
+  id: "0.23497929383", // random number hopefully unique to the message
   data: {
-    ...
+    ... // this will be passed to the event
   }
 }
 
@@ -30,7 +19,6 @@ Nexus.make = function(name) {
   var nexus = {};
   var events = {};
   nexus.name = name;
-  nexus.friends = {};
 
   nexus.on = function(eventName, func) {
     events[eventName] = events[eventName] || [];
@@ -43,19 +31,15 @@ Nexus.make = function(name) {
 
     var result;
     for (var i = eventList.length - 1; i >= 0; i--) {
-      var check = eventList[i](obj.data);
+      var check = eventList[i](obj.data, obj.from);
       result = check || result;
     };
 
     return result; // Cation: returns only the first result
   };
 
-  nexus.on('join', function(data) {
-    if (!data.name) return;
-    nexus.friends[data.name] = true;
-  });
-
-  nexus.on('ping', function() {
+  nexus.on('ping', function(obj, name) {
+    console.log("%s pinged me!", name);
     return {name: nexus.name};
   })
 

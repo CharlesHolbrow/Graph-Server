@@ -24,9 +24,8 @@ var getClientName = function() {
 var nexus = Nexus.make('Server A!');
 
 
-exServe.get('/Nexus.js', function(req, res){
-  res.sendfile('./Nexus.js');
-});
+exServe.get('/Nexus.js', function(req, res){ res.sendfile('./Nexus.js'); });
+exServe.get('/BrowserNexus.js', function(req, res){ res.sendfile('./public/BrowserNexus.js'); });
 
 exServe.get('/graphConnect.js', function(req, res){
   res.sendfile('./public/graphConnect.js');
