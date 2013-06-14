@@ -10,8 +10,8 @@ var onJoin = function() {
     // try to send a greeting to target node
     var target = document.getElementById('target').innerHTML;
 
-    nexus.connect(target, function(conn) {
-      conn.send({event:'ping'});
+    nexus.send(target, {event:'ping'}, function(data) {
+      console.log('Pinged %s and got back %s', target, JSON.stringify(data));
     });
 
   } else { // not 200, 201, 202

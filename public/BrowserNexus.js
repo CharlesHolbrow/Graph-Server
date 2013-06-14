@@ -2,6 +2,7 @@ BrowserNexus = {};
 
 BrowserNexus.make = function(name) {
   var nexus = Nexus.make(name);
+  var pendingConnections = {};
   var connections = {};
   var callbacks = {};
 
@@ -13,6 +14,9 @@ BrowserNexus.make = function(name) {
     });
   });
 
+
+  // -----------------------------------
+  // private methods
   var receive = function(obj) {
     console.log('Got data: <%s> from %s', JSON.stringify(obj), obj.from);
 
@@ -34,25 +38,53 @@ BrowserNexus.make = function(name) {
     }
   }
 
+  var connect = function(target, callback){
+    var conn = peer.connect(target);
+    pendingConnections[target] = conn;
+    conn.on('open', function(){
+      // when connection opens, move it out of pendingConnections
+      connections[target] = conn;
+      delete pendingConnections[target];
+      callback && callback(conn);
+    });
+  }
+
+
+  // -----------------------------------
+  // Instance Methods
+  nexus.debug = function() {
+    console.log('connections:', connections);
+    console.log('pendingConn:', pendingConnections);
+    console.log('callbacks:', callbacks);
+  }
+
   nexus.send = function(target, obj, callback) {
     if (callback) {
       obj.id = '' + Math.random();
       callbacks[obj.id] = callback;
     }
-    var conn = connections[target];
-    if (conn) {
-      conn.send(obj);
-    } else {
-      console.warn('Could not send to %s. <Not Connected>', target);
-    }
-  }
 
-  nexus.connect = function(target, callback) {
-    var conn = peer.connect(target);
-    conn.on('open', function(){
-      connections[target] = conn;
-      callback && callback(conn);
-    });
+    // Connections should only contain 'open' connections.
+    // If the object contains a closed connection, delete it.
+    if (connections[target] && !connections[target].open) {
+      delete connections[target]
+    }
+
+    pendingConnection = pendingConnections[target];
+    if (pendingConnection){
+      // if the connection has been created, but is not open
+      pendingConnection.on('open', function(){
+        pendingConnection.send(obj);
+      });
+    } else if (!connections[target]){
+      // there is no connection, pending or otherwise
+      connect(target, function(conn){
+        conn.send(obj);
+      });
+    } else if (connections[target]){
+      // we have an open connection
+      connections[target].send(obj);
+    }
   }
 
   return nexus;
