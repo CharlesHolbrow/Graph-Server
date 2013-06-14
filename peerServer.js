@@ -2,13 +2,18 @@ var PeerServer  = require('peer').PeerServer;
 var Handlebars  = require('handlebars');
 var fs          = require('fs');
 var Nexus       = require('./Nexus.js');
+var express     = require('express')
 
-var exServe = require('express')();
+var exServe = express();
 var source = fs.readFileSync('public/index.html', {encoding: 'utf8'});
-var template = Handlebars.compile(source)
+var template = Handlebars.compile(source);
 
 var SIGNAL_PORT = process.env.SIGNAL_PORT;
 var SIGNAL_HOST = process.env.SIGNAL_HOST;
+
+// logging
+var logFile = fs.createWriteStream('./logs/requests.log', {flags: 'a'});
+exServe.use(express.logger({stream:logFile}));
 
 // we will name the nodes on our graph
 var nameIndex = 0;
