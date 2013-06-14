@@ -2,9 +2,8 @@ Graph Server
 ============
 
 To launch:
+----------
 
-- Edit serve.bash
-- run the following:
+    $ npm install -g forever  
 
-    $ npm install -g nodemon  
-    $ ./serve.bash  
+edit and execute ./serve.bash

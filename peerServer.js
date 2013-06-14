@@ -13,7 +13,7 @@ var SIGNAL_HOST = process.env.SIGNAL_HOST;
 
 // logging
 var logFile = fs.createWriteStream('./logs/requests.log', {flags: 'a'});
-exServe.use(express.logger({stream:logFile}));
+exServe.use(express.logger({stream: logFile}));
 
 // we will name the nodes on our graph
 var nameIndex = 0;
@@ -23,17 +23,14 @@ var clientNames = [
   'sow'];
 
 var getClientName = function() {
-  var name = clientNames[nameIndex];
+  var name = clientNames[nameIndex % clientNames.length];
   nameIndex++;
-  if (nameIndex >= clientNames.length) {
-    nameIndex = 0;
-  }
+  if (nameIndex >= clientNames.length) name += nameIndex;
   return name;
 };
 
 // the server itself is a nexus
 var nexus = Nexus.make('Server A!');
-
 
 exServe.get('/Nexus.js', function(req, res){ res.sendfile('./Nexus.js'); });
 exServe.get('/BrowserNexus.js', function(req, res){ res.sendfile('./public/BrowserNexus.js'); });
@@ -65,7 +62,6 @@ exServe.post('/join', function(req, res){
   });
 });
 
-
 exServe.get('/to/:target', function(req, res){
   var pathDirs = req.url.split('/');
   var context = {
@@ -81,4 +77,4 @@ exServe.listen("9001");
 console.log("launch peer server on %s:%s", SIGNAL_HOST, SIGNAL_PORT);
 var server = new PeerServer({ port: SIGNAL_PORT });
 
-console.log('Script Complete');
+console.log('Servers are running');

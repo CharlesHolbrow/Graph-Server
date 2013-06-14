@@ -3,4 +3,4 @@
 export SIGNAL_HOST='localhost'
 export SIGNAL_PORT='9000'
 
-nodemon peerServer.js
+forever start -e logs/error.log -o logs/debug.log peerServer.js
