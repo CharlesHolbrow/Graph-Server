@@ -1,12 +1,12 @@
 BrowserNexus = {};
 
-BrowserNexus.make = function(name) {
+BrowserNexus.make = function(name, signalHost, signalPort) {
   var nexus = Nexus.make(name);
   var pendingConnections = {};
   var connections = {};
   var callbacks = {};
 
-  var peer = new Peer(name, {host: 'localhost', port: 9000});
+  var peer = new Peer(name, {host: signalHost, port: signalPort});
   peer.on('connection', function(conn){
     conn.on('data', function(data) {
       data.from = conn.peer; // overwrite 'from'

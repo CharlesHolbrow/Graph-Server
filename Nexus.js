@@ -6,6 +6,7 @@ an exmple event object:
 {
   event: "addRequest", // required
   id: "0.23497929383", // random number hopefully unique to the message
+  from: "<node name>", // must be added automatically by send method
   data: {
     ... // this will be passed to the event
   }

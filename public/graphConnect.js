@@ -5,7 +5,10 @@ var onJoin = function() {
     console.log('JOINED!', answer);
     document.getElementById('name').innerHTML = answer.name;
 
-    window.nexus = BrowserNexus.make(answer.name);
+    window.nexus = BrowserNexus.make(
+      answer.name,
+      answer.signalHost,
+      answer.signalPort);
 
     // try to send a greeting to target node
     var target = document.getElementById('target').innerHTML;

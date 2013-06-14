@@ -7,9 +7,15 @@ var exServe = require('express')();
 var source = fs.readFileSync('public/index.html', {encoding: 'utf8'});
 var template = Handlebars.compile(source)
 
+var SIGNAL_PORT = process.env.SIGNAL_PORT;
+var SIGNAL_HOST = process.env.SIGNAL_HOST;
+
 // we will name the nodes on our graph
-var clientNames = ['ape', 'bat', 'cat', 'cow', 'cub', 'doe', 'dog', 'elk', 'ewe', 'fox', 'kid', 'man', 'pig', 'pup', 'ram', 'rat', 'sow'];
 var nameIndex = 0;
+var clientNames = [
+  'ape', 'bat', 'cat', 'cow', 'cub', 'doe', 'dog', 'elk',
+  'ewe', 'fox', 'kid', 'man', 'pig', 'pup', 'ram', 'rat',
+  'sow'];
 
 var getClientName = function() {
   var name = clientNames[nameIndex];
@@ -41,7 +47,12 @@ exServe.get('/friends', function(req, res){
 
 exServe.post('/join', function(req, res){
   var name = getClientName();
-  res.json({name:name, friends:nexus.friends});
+  res.json({
+    name:name,
+    friends:nexus.friends,
+    signalHost: SIGNAL_HOST,
+    signalPort: SIGNAL_PORT
+  });
 
   nexus.trigger({
     event:'join',
@@ -62,7 +73,7 @@ exServe.get('/to/:target', function(req, res){
 console.log("launching express server on 9001");
 exServe.listen("9001");
 
-console.log("launch peer server on 9000");
-var server = new PeerServer({ port: 9000 });
+console.log("launch peer server on %s:%s", SIGNAL_HOST, SIGNAL_PORT);
+var server = new PeerServer({ port: SIGNAL_PORT });
 
 console.log('Script Complete');
