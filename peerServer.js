@@ -32,10 +32,7 @@ var getClientName = function() {
 // the server itself is a nexus
 var nexus = Nexus.make('Server A!');
 
-// serve static files
-exServe.use(express.static(__dirname + '/public'));
-
-
+// explicit routing
 exServe.get('/', function(req, res){
   res.send('Try this - /to/:target');
 });
@@ -67,6 +64,9 @@ exServe.get('/to/:target', function(req, res){
 
   res.send(template(context));
 });
+
+// serve static files
+exServe.use(express.static(__dirname + '/public'));
 
 console.log("launching express server on 9001");
 exServe.listen("9001");
