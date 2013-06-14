@@ -35,7 +35,6 @@ var nexus = Nexus.make('Server A!');
 // serve static files
 exServe.use(express.static(__dirname + '/public'));
 
-exServe.get('/Nexus.js', function(req, res){ res.sendfile('./Nexus.js'); });
 
 exServe.get('/', function(req, res){
   res.send('Try this - /to/:target');
