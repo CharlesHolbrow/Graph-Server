@@ -64,7 +64,8 @@ BrowserNexus.make = function(name, signalHost, signalPort) {
       callbacks[obj.id] = callback;
     }
 
-    // Connections should only contain 'open' connections.
+    // If a connection has closed since we added it to
+    // connections, we do not want to try to send to it.
     // If the object contains a closed connection, delete it.
     if (connections[target] && !connections[target].open) {
       delete connections[target]
