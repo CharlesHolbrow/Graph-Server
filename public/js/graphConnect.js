@@ -37,3 +37,15 @@ window.onload = function() {
     event: 'join'
   }, onJoin);
 };
+
+// helper -- handy for passing in to 'send' methods from the console
+window.debug = function(result){
+  if (result) {
+    console.log('result:', result);
+
+    if (result.data) {
+      console.log('data:', result.data);
+      window.data = result.data;
+    }
+  }
+}

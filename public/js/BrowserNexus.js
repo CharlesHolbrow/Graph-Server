@@ -88,5 +88,20 @@ BrowserNexus.make = function(name, signalHost, signalPort) {
     }
   }
 
+  // like send, but to the server. TODO: ajax and send should
+  // be a single method.
+  // Note that since there is currently only one server, the
+  // function signature has only two arguments.
+  nexus.ajaxSend = function(obj, callback){
+
+    var jqCallback = function(data, textStatus, jqXHR){ // this function could be called nexus.ajaxReceive
+      if (callback){
+        callback({data:data, from:nexus.get('name')});
+      }
+    };
+
+    $.post('/trigger', obj, jqCallback);
+  };
+
   return nexus;
 };

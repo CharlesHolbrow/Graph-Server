@@ -60,7 +60,7 @@ Nexus.make = function(name) {
   nexus.on('ping', function(data){
     return {name: nexus.get('name')};
   });
-  // show a list of all the resources our cliens can
+  // show a list of all the resources our cliens can 'get'
   nexus.on('getResourceList', function(data){
     return Object.keys(resources);
   });

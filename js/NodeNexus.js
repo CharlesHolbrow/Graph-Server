@@ -5,6 +5,7 @@ exports.make = function(name){
 
   // private vars
   var nodes = {}
+  nexus.set('nodes', nodes);
 
   // TODO: ensure that the request is coming from the same ip
   nexus.recordInteraction = function(name, ip){
@@ -43,8 +44,8 @@ exports.make = function(name){
     }
   };
 
-  // remove dead nodes every two seconds
-  setInterval(nexus.purgeNodes, 2000);
+  // remove dead nodes every 2.5 seconds
+  setInterval(nexus.purgeNodes, 2500);
 
   return nexus;
 }
