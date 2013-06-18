@@ -43,16 +43,24 @@ exServe.get('/', function(req, res){
 // Equivalent of nexus.receive
 exServe.post('/trigger', function(req, res){
   if (req.body.event) {
-    req.body.ip = req.connection.remoteAddress;
-    var result = nexus.trigger(req.body);
+    var obj = req.body;
+    obj.data = obj.data || {};
+    obj.data.remoteAddress = req.connection.remoteAddress;
+
+    console.log('trigger', obj);
+    var result = nexus.trigger(obj);
+
     res.json(201, result); // how do we decide what response code to send
   } else {
     res.send(from);
   }
 });
 
-nexus.on('join', function(data, from){
+nexus.on('join', function(obj, from){
   var name = getClientName();
+  nexus.recordInteraction(name, obj.remoteAddress);
+  nexus.logNodes();
+
   return {
     name:name,
     signalHost: SIGNAL_HOST,

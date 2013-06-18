@@ -18,7 +18,7 @@ var onJoin = function(data, textStatus, jqXHR) {
     });
 
   } else { // not 200, 201, 202
-    console.error('Error joining graph',jqXHR.status, jqXHR);
+    console.error('Error joining graph', jqXHR.status, jqXHR);
   }
 };
 

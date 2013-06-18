@@ -32,7 +32,7 @@ Nexus.make = function(name) {
 
     var result;
     for (var i = eventList.length - 1; i >= 0; i--) {
-      var check = eventList[i](obj.data, obj.from);
+      var check = eventList[i].call(nexus, obj.data, obj.from);
       result = check || result;
     };
 
@@ -40,9 +40,9 @@ Nexus.make = function(name) {
   };
 
   nexus.on('ping', function(data, name) {
-    console.log("%s pinged me!", name);
+    console.log("%s was pinged by %s!", this.name, name);
     return {name: nexus.name};
-  })
+  });
 
   return nexus;
 };
