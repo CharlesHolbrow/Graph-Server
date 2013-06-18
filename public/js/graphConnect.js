@@ -19,12 +19,41 @@ var onJoin = function(data, textStatus, jqXHR) {
 
     // begin the heartbeat
     setInterval(function(){
-      $.post('/trigger', {
-        event: 'ping',
+      nexus.ajaxSend({
+        event: 'get',
+        data: {resourceName:'nodes'},
         from: data.name,
-      });
-    }, 1000);
+      }, function(obj){ // the event callback
+        var $nodesUl = $('ul#nodes');
+        var $nodes = $('li.node');
+        // remove any nodes that are not in the new list
+        for (var i = 0; i < $nodes.length; i++) {
+          if (!obj.data[$nodes.eq(i).attr('name')]){ // is the node NOT in the new list?
+            $('.node.' + $nodes.eq(i).attr('name')).remove(); // remove it
+          }
+        };
 
+        // now add any nodes to the dom that are not there already
+        for (name in obj.data) {
+          if (!($('.' + name).length)){
+            var $node = $('<li class="node">').addClass(name).html(name).attr('name', name);
+            $node.click(function(){
+              var $el = $(this);
+              var name = $el.attr('name');
+              nexus.send(name, {event:'getResourceList'}, function(obj){ // got resource list callback
+                var resources = obj.data;
+                debugger;
+                $('[name=' +  name + '] span').remove();
+                for (var i = 0; i < resources.length; i++) {
+                  $('<span>').html(resources[i]).appendTo($el);
+                };
+              });
+            });
+            $node.appendTo($nodesUl);
+          }
+        }
+      })
+    }, 1000);
   } else { // not 200, 201, 202
     console.error('Error joining graph', jqXHR.status, jqXHR);
   }
