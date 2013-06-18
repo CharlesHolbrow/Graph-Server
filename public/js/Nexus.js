@@ -26,8 +26,17 @@ var Nexus = {}
 Nexus.make = function(name) {
   var nexus = {};
   var events = {};
+
+  // nexus.get and nexus.set from resources
   var resources = {};
-  nexus.name = name;
+  nexus.set = function(resourceName, value){
+    resources[resourceName] = value;
+  };
+  nexus.get = function(resourceName){
+    return resources[resourceName];
+  };
+
+  nexus.set('name', name);
 
   nexus.on = function(eventName, func) {
     events[eventName] = events[eventName] || [];
@@ -49,11 +58,15 @@ Nexus.make = function(name) {
 
   // event listeners
   nexus.on('ping', function(data){
-    return {name: nexus.name};
+    return {name: nexus.get('name')};
   });
-
+  // show a list of all the resources our cliens can
   nexus.on('getResourceList', function(data){
     return Object.keys(resources);
+  });
+  // allow other nexus object to 'get' our resources
+  nexus.on('get', function(data){ // expect data.resourceName
+    return nexus.get(data.resourceName);
   });
 
   return nexus;
