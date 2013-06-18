@@ -17,6 +17,14 @@ var onJoin = function(data, textStatus, jqXHR) {
       console.log('Pinged %s and got back %s', target, JSON.stringify(data));
     });
 
+    // begin the heartbeat
+    setInterval(function(){
+      $.post('/trigger', {
+        event: 'ping',
+        from: data.name,
+      });
+    }, 1000);
+
   } else { // not 200, 201, 202
     console.error('Error joining graph', jqXHR.status, jqXHR);
   }

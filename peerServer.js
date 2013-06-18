@@ -45,21 +45,24 @@ exServe.post('/trigger', function(req, res){
   if (req.body.event) {
     var obj = req.body;
     obj.data = obj.data || {};
-    obj.data.remoteAddress = req.connection.remoteAddress;
+    obj.remoteAddress = req.connection.remoteAddress;
 
-    console.log('trigger', obj);
+    if (obj.from) {
+      nexus.recordInteraction(obj.from, obj.remoteAddress);
+    }
+
     var result = nexus.trigger(obj);
-
     res.json(201, result); // how do we decide what response code to send
+
   } else {
-    res.send(from);
+    res.send(404, 'POST to Trigger - Error: no event');
   }
 });
 
-nexus.on('join', function(obj, from){
+// TODO: we should move this to BrowserNexus, but how do we send the signal host and signal port?
+nexus.on('join', function(obj){
   var name = getClientName();
   nexus.recordInteraction(name, obj.remoteAddress);
-  nexus.logNodes();
 
   return {
     name:name,
@@ -76,6 +79,8 @@ exServe.get('/to/:target', function(req, res){
 
   res.send(template(context));
 });
+
+
 
 // serve static files
 exServe.use(express.static(__dirname + '/public'));

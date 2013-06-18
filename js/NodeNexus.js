@@ -14,12 +14,37 @@ exports.make = function(name){
     }
   };
 
+  // remove any nodes we have not seen in a while
+  nexus.purgeNodes = function(tolerance){
+    var delta;
+    var lostNodeNames = [];
+    tolerance = tolerance || 2000;
+    time = new Date();
+
+    // find all dead node names
+    for (name in nodes){
+      delta = time - nodes[name].time;
+      if (delta > tolerance){
+        lostNodeNames.push(name);
+      }
+    }
+
+    // remove all dead nodes
+    for (var i = 0; i < lostNodeNames.length; i++) {
+      delete nodes[lostNodeNames[i]];
+      console.log('removing dead node:', lostNodeNames[i]);
+    };
+  }
+
   nexus.logNodes = function(){
     console.log('---Nodes---')
     for (key in nodes){
       console.log(key, nodes[key]);
     }
   };
+
+  // remove dead nodes every two seconds
+  setInterval(nexus.purgeNodes, 2000);
 
   return nexus;
 }

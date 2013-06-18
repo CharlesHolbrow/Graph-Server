@@ -40,7 +40,6 @@ Nexus.make = function(name) {
   };
 
   nexus.on('ping', function(data, name) {
-    console.log("%s was pinged by %s!", this.name, name);
     return {name: nexus.name};
   });
 
