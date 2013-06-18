@@ -1,7 +1,7 @@
 var PeerServer  = require('peer').PeerServer;
 var Handlebars  = require('handlebars');
 var fs          = require('fs');
-var Nexus       = require('./public/js/Nexus.js');
+var NodeNexus   = require('./js/NodeNexus.js');
 var express     = require('express')
 
 var exServe = express();
@@ -14,6 +14,9 @@ var SIGNAL_HOST = process.env.SIGNAL_HOST;
 // logging
 var logFile = fs.createWriteStream('./logs/requests.log', {flags: 'a'});
 exServe.use(express.logger({stream: logFile}));
+
+// Parse json into object
+exServe.use('/trigger', express.bodyParser());
 
 // we will name the nodes on our graph
 var nameIndex = 0;
@@ -30,30 +33,31 @@ var getClientName = function() {
 };
 
 // the server itself is a nexus
-var nexus = Nexus.make('Server A!');
+var nexus = NodeNexus.make('Server A!');
 
 // explicit routing
 exServe.get('/', function(req, res){
   res.send('Try this - /to/:target');
 });
 
-exServe.get('/friends', function(req, res){
-  res.send(nexus.friends);
+// Equivalent of nexus.receive
+exServe.post('/trigger', function(req, res){
+  if (req.body.event) {
+    req.body.ip = req.connection.remoteAddress;
+    var result = nexus.trigger(req.body);
+    res.json(201, result); // how do we decide what response code to send
+  } else {
+    res.send(from);
+  }
 });
 
-exServe.post('/join', function(req, res){
+nexus.on('join', function(data, from){
   var name = getClientName();
-  res.json({
+  return {
     name:name,
-    friends:nexus.friends,
     signalHost: SIGNAL_HOST,
     signalPort: SIGNAL_PORT
-  });
-
-  nexus.trigger({
-    event:'join',
-    data:{ name:name }
-  });
+  };
 });
 
 exServe.get('/to/:target', function(req, res){

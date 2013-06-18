@@ -1,14 +1,14 @@
-var onJoin = function() {
-  if (this.status >= 200 && this.status <= 202) {
+var onJoin = function(data, textStatus, jqXHR) {
 
-    var answer = JSON.parse(this.response); // assume valid json with .name
-    console.log('JOINED!', answer);
-    document.getElementById('name').innerHTML = answer.name;
+  if (jqXHR.status >= 200 && jqXHR.status <= 202) {
+
+    console.log('JOINED!', data);
+    document.getElementById('name').innerHTML = data.name;
 
     window.nexus = BrowserNexus.make(
-      answer.name,
-      answer.signalHost,
-      answer.signalPort);
+      data.name,
+      data.signalHost,
+      data.signalPort);
 
     // try to send a greeting to target node
     var target = document.getElementById('target').innerHTML;
@@ -18,18 +18,14 @@ var onJoin = function() {
     });
 
   } else { // not 200, 201, 202
-    console.error('Error joining graph', this);
+    console.error('Error joining graph',jqXHR.status, jqXHR);
   }
 };
 
 
 window.onload = function() {
 
-  // let's try to join the graph
-  var joinRequest = new XMLHttpRequest();
-  joinRequest.onload = onJoin;
-
-  joinRequest.open('POST', '/join', true);
-  joinRequest.send();
-
+  $.post('/trigger', {
+    event: 'join'
+  }, onJoin);
 };

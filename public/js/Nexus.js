@@ -39,7 +39,7 @@ Nexus.make = function(name) {
     return result; // Cation: returns only the first result
   };
 
-  nexus.on('ping', function(obj, name) {
+  nexus.on('ping', function(data, name) {
     console.log("%s pinged me!", name);
     return {name: nexus.name};
   })
