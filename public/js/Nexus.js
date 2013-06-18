@@ -15,12 +15,6 @@ an exmple event object:
 I would like to make Nexus Backbone model
 */
 
-// check if we are in node
-if (typeof module !== 'undefined' && module.exports){
-  var Resource = require('./Resource.js');
-};
-
-
 var Nexus = {}
 
 Nexus.make = function(name) {
