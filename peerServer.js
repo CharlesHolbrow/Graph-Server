@@ -5,8 +5,6 @@ var NodeNexus   = require('./js/NodeNexus.js');
 var express     = require('express')
 
 var exServe = express();
-var source = fs.readFileSync('public/index.html', {encoding: 'utf8'});
-var template = Handlebars.compile(source);
 
 var SIGNAL_PORT = process.env.SIGNAL_PORT;
 var SIGNAL_HOST = process.env.SIGNAL_HOST;
@@ -17,6 +15,7 @@ exServe.use(express.logger({stream: logFile}));
 
 // Parse json into object
 exServe.use('/trigger', express.bodyParser());
+
 
 // we will name the nodes on our graph
 var nameIndex = 0;
@@ -35,9 +34,9 @@ var getClientName = function() {
 // the server itself is a nexus
 var nexus = NodeNexus.make('Server A!');
 
-// explicit routing
+// route
 exServe.get('/', function(req, res){
-  res.send('Try this - /to/:target');
+  res.sendfile('public/index.html');
 });
 
 // Equivalent of nexus.receive
@@ -70,16 +69,6 @@ nexus.on('join', function(obj){
     signalPort: SIGNAL_PORT
   };
 });
-
-exServe.get('/to/:target', function(req, res){
-  var pathDirs = req.url.split('/');
-  var context = {
-    target: pathDirs[2]
-  };
-
-  res.send(template(context));
-});
-
 
 
 // serve static files

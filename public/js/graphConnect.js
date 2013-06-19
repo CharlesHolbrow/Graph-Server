@@ -10,13 +10,6 @@ var onJoin = function(data, textStatus, jqXHR) {
       data.signalHost,
       data.signalPort);
 
-    // try to send a greeting to target node
-    var target = document.getElementById('target').innerHTML;
-
-    nexus.send(target, {event:'ping'}, function(data) {
-      console.log('Pinged %s and got back %s', target, JSON.stringify(data));
-    });
-
     // begin the heartbeat
     setInterval(function(){
       nexus.ajaxSend({
