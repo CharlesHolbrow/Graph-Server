@@ -35,17 +35,25 @@ var onJoin = function(data, textStatus, jqXHR) {
 
         // now add any nodes to the dom that are not there already
         for (name in obj.data) {
-          if (!($('.' + name).length)){
+          if (!($('.' + name).length) && (name !== nexus.get('name'))){
             var $node = $('<li class="node">').addClass(name).html(name).attr('name', name);
             $node.click(function(){
               var $el = $(this);
               var name = $el.attr('name');
               nexus.send(name, {event:'getResourceList'}, function(obj){ // got resource list callback
                 var resources = obj.data;
-                debugger;
                 $('[name=' +  name + '] span').remove();
                 for (var i = 0; i < resources.length; i++) {
-                  $('<span>').html(resources[i]).appendTo($el);
+                  var resourceName = resources[i];
+                  var $resource = $('<span class="resource">').html(resourceName);
+                  $resource.click(function(){
+                    var resourceName = $(this).html()
+                    nexus.send(name, {event:'get', data:{resourceName:resourceName}}, function(obj){
+                      $('#resource-data').html(obj.data);
+                      console.log('resource data: ', obj);
+                    })
+                  });
+                  $resource.appendTo($el);
                 };
               });
             });
