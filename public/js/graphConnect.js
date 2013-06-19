@@ -10,6 +10,10 @@ var onJoin = function(data, textStatus, jqXHR) {
       data.signalHost,
       data.signalPort);
 
+    $('textarea').bind('input propertychange', function() {
+      nexus.set('profile', $('textarea').val());
+    });
+
     // begin the heartbeat
     setInterval(function(){
       nexus.ajaxSend({
