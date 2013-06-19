@@ -1,5 +1,14 @@
-
 .resource {
   padding-left: 20px;
   padding-right: 20px;
+}
+
+textarea {
+  width: 400px;
+  height: 200px;
+}
+
+li {
+  cursor: hand;
+  cursor: pointer;
 }
