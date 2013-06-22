@@ -29,14 +29,14 @@ To request a resource from a nexus, you need to know the nexus' name. In an new 
 
 The function signature for Nexus.send is:
 
-    Nexus.send(targetNexusName, event, callback)
+    Nexus.send(targetNexusName, eventObject, callback)
 
 Events
 ------
 
 When you send a resource request to a nexus, you are actually triggering an event on that nexus. That event will be passed the 'data' attribute of the `event` object.
 
-Every nexus in consructed with `ping`, `get` event listeners. Use `nexus.on('eventName', callback)` to register additional events. Note that these events will be callable by other Nexus in the mesh. Only the result of the FIRST callback to be registered will be returned to remote nexus. 
+Every nexus in consructed with `ping`, `get`, and `getResourceList` event listeners. Use `nexus.on('eventName', callback)` to register additional events. Note that these events will be callable by other Nexus in the mesh. Only the result of the FIRST callback to be registered will be returned to remote nexus. 
 
 To launch:
 ----------
