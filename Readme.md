@@ -8,7 +8,7 @@ Working demo: www.TheVeryWedge.com
 Usage
 -----
 
-By connecting to site, you become a `Nexus` in the mesh network. Other nexus are visible on the front page. Try opening up the page in two browser tabs. 
+By connecting to site, you become a named `Nexus` in the mesh network. Other nexus are listed by name on the front page. Try opening up the page in two browser tabs. 
 
 Nexus in the graph can can publish named javascript objects. Try  this syntax in the Chrome console:
 
